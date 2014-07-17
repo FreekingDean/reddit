@@ -57,9 +57,9 @@ func (s Session) DefaultFrontpage() ([]*Submission, error) {
 }
 
 // SubredditSubmissions returns the submissions on the given subreddit.
-func (s Session) SubredditSubmissions(subreddit string) ([]*Submission, error) {
+func (s Session) SubredditSubmissions(subreddit string, limit uint8, after string) ([]*Submission, error) {
 	req := request{
-		url:       fmt.Sprintf("http://www.reddit.com/r/%s.json", subreddit),
+		url:       fmt.Sprintf("http://www.reddit.com/r/%s.json?limit=%d&after=%s", subreddit, limit, after),
 		useragent: s.useragent,
 	}
 	body, err := req.getResponse()
