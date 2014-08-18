@@ -201,8 +201,30 @@ func (s Session) AboutSubreddit(subreddit string) (*Subreddit, error) {
 	return &r.Data, nil
 }
 
-// Comments returns the comments for a given Submission.
-func (s Session) Comments(h *Submission) ([]*Comment, error) {
+// SubredditComments returns the comments from a given subreddit
+func (s Session) SubredditComments(subreddit string) ([]*Comment, error) {
+	req := &request{
+		url:       fmt.Sprintf("http://www.reddit.com/r/%s/comments.json", subreddit),
+		useragent: s.useragent,
+	}
+	body, err := req.getResponse()
+	if err != nil {
+		return nil, err
+	}
+
+	r := json.NewDecoder(body)
+	var interf interface{}
+	if err = r.Decode(&interf); err != nil {
+		return nil, err
+	}
+	helper := new(helper)
+	helper.buildComments(interf)
+
+	return helper.comments, nil
+}
+
+// SubmissionComments returns the comments for a given Submission.
+func (s Session) SubmissionComments(h *Submission) ([]*Comment, error) {
 	req := &request{
 		url:       fmt.Sprintf("http://www.reddit.com/comments/%s/.json", h.ID),
 		useragent: s.useragent,
