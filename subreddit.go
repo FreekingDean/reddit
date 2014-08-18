@@ -34,3 +34,11 @@ func (s *Subreddit) String() string {
 	}
 	return fmt.Sprintf("%s (%s)", s.Title, subs)
 }
+
+func (s *Subreddit) Submissions(session *Session, limit uint8, after string) ([]*Submission, error) {
+  return session.SubredditSubmissions(s.URL[3:len(s.URL)-1], limit, after)
+}
+
+func (s *Subreddit) Comments(session *Session) ([]*Comment, error) {
+  return session.SubredditComments(s.URL[3:len(s.URL)-1])
+}
