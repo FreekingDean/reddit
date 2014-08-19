@@ -202,9 +202,9 @@ func (s Session) AboutSubreddit(subreddit string) (*Subreddit, error) {
 }
 
 // SubredditComments returns the comments from a given subreddit
-func (s Session) SubredditComments(subreddit string) ([]*Comment, error) {
+func (s Session) SubredditComments(subreddit string, limit uint8, after string) ([]*Comment, error) {
 	req := &request{
-		url:       fmt.Sprintf("http://www.reddit.com/r/%s/comments.json", subreddit),
+		url:       fmt.Sprintf("http://www.reddit.com/r/%s/comments.json?limit=%d&after=%s", subreddit, limit, after),
 		useragent: s.useragent,
 	}
 	body, err := req.getResponse()

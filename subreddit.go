@@ -39,6 +39,6 @@ func (s *Subreddit) Submissions(session *Session, limit uint8, after string) ([]
   return session.SubredditSubmissions(s.URL[3:len(s.URL)-1], limit, after)
 }
 
-func (s *Subreddit) Comments(session *Session) ([]*Comment, error) {
-  return session.SubredditComments(s.URL[3:len(s.URL)-1])
+func (s *Subreddit) Comments(session *Session, limit uint8, after string) ([]*Comment, error) {
+  return session.SubredditComments(s.URL[3:len(s.URL)-1], limit, after)
 }
