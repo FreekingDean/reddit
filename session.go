@@ -202,9 +202,17 @@ func (s Session) AboutSubreddit(subreddit string) (*Subreddit, error) {
 }
 
 // SubredditComments returns the comments from a given subreddit
-func (s Session) SubredditComments(subreddit string, limit uint8, after string) ([]*Comment, error) {
+func (s Session) SubredditComments(subreddit string, limit uint8, after string, before string) ([]*Comment, error) {
+  query := fmt.Sprintf("limit=%d", limit)
+  if after != "" {
+    query += fmt.Sprintf("&after=%s", after)
+  }
+  if before != "" {
+    query += fmt.Sprintf("&before=%s", before)
+  }
+
 	req := &request{
-		url:       fmt.Sprintf("http://www.reddit.com/r/%s/comments.json?limit=%d&after=%s", subreddit, limit, after),
+		url:       fmt.Sprintf("http://www.reddit.com/r/%s/comments.json?%s", subreddit, query),
 		useragent: s.useragent,
 	}
 	body, err := req.getResponse()
