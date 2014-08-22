@@ -198,6 +198,8 @@ func (s Session) AboutSubreddit(subreddit string) (*Subreddit, error) {
 		return nil, err
 	}
 
+  r.Data.Session = &s
+
 	return &r.Data, nil
 }
 

@@ -10,6 +10,7 @@ import (
 
 // Subreddit represents a subreddit from reddit.com.
 type Subreddit struct {
+  comments
 	Name        string  `json:"display_name"`
 	Title       string  `json:"title"`
 	Desc        string  `json:"description"`
@@ -21,6 +22,16 @@ type Subreddit struct {
 	DateCreated float32 `json:"created_utc"`
 	NumSubs     int     `json:"subscribers"`
 	IsNSFW      bool    `json:"over18"`
+
+  Session     *Session `json:"-"`
+
+  Hot           Query
+  New           Query
+  Rising        Query
+  Controversial Queryable
+  Top           Queryable
+  Gilded        Query
+  Promoted      Query
 }
 
 // String returns the string representation of a subreddit.
@@ -35,10 +46,12 @@ func (s *Subreddit) String() string {
 	return fmt.Sprintf("%s (%s)", s.Title, subs)
 }
 
-func (s *Subreddit) Submissions(session *Session, limit uint8, after string) ([]*Submission, error) {
-  return session.SubredditSubmissions(s.URL[3:len(s.URL)-1], limit, after)
+// Submissions returns the submissions from this subreddit
+func (s *Subreddit) Submissions(limit uint8, after string) ([]*Submission, error) {
+  return s.Session.SubredditSubmissions(s.URL[3:len(s.URL)-1], limit, after)
 }
 
-func (s *Subreddit) Comments(session *Session, limit uint8, after string, before string) ([]*Comment, error) {
-  return session.SubredditComments(s.URL[3:len(s.URL)-1], limit, after, before)
+// Comments returns the comments from this subreddit
+func (s *Subreddit) Comments(limit uint8, after string, before string) ([]*Comment, error) {
+  return s.Session.SubredditComments(s.URL[3:len(s.URL)-1], limit, after, before)
 }
