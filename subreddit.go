@@ -6,7 +6,6 @@ package reddit
 
 import (
 	"fmt"
-  "errors"
 )
 
 // Subreddit represents a subreddit from reddit.com.
@@ -39,55 +38,47 @@ func (s *Subreddit) String() string {
 	return fmt.Sprintf("%s (%s)", s.Title, subs)
 }
 
-// SubredditSubmissionss returns the submissions from this subreddit
-func (s *Subreddit) SubredditSubmissionss(params map[string]interface{}) ([]*Submission, error) {
-  return s.Hot(params)
+// Submissions returns the submissions from this subreddit
+func (s *Subreddit) Submissions(period string, limit uint8, before string, after string) ([]*Submission, error) {
+  return s.Hot(period, limit, before, after)
 }
 
 // Comments returns the comments from this subreddit
-func (s *Subreddit) Comments(params map[string]interface{}) ([]*Comment, error) {
-  params["subreddit"] = Reddit
-  return s.Session.SubredditComments(params)
+func (s *Subreddit) Comments(limit uint8, before string, after string) ([]*Comment, error) {
+  return s.Session.SubredditComments(s.Reddit, limit, before, after)
 }
 
-func (*s Subreddit) Hot(params map[string]interface{}) ([]*Submissions, error) {
-  params["subreddit"] = Reddit
-  params["find_by"] = "hot"
-  return s.Sesssion.SubredditSubmissionss(params)
+// Hot returns the subreddits submissions sorted by "hot"
+func (s *Subreddit) Hot(period string, limit uint8, before string, after string) ([]*Submission, error) {
+  return s.Session.SubredditSubmissions(s.Reddit, "hot", period, limit, before, after)
 }
 
-func (*s Subreddit) New(params map[string]interface{}) ([]*Submissions, error) {
-  params["subreddit"] = Reddit
-  params["find_by"] = "new"
-  return s.Sesssion.SubredditSubmissionss(params)
+// New returns the subreddits submissions sorted by "new"
+func (s *Subreddit) Not(period string, limit uint8, before string, after string) ([]*Submission, error) {
+  return s.Session.SubredditSubmissions(s.Reddit, "new", period, limit, before, after)
 }
 
-func (*s Subreddit) Rising(params map[string]interface{}) ([]*Submissions, error) {
-  params["subreddit"] = Reddit
-  params["find_by"] = "rising"
-  return s.Sesssion.SubredditSubmissionss(params)
+// Rising returns the subreddits submissions sorted by "rising"
+func (s *Subreddit) Rising(period string, limit uint8, before string, after string) ([]*Submission, error) {
+  return s.Session.SubredditSubmissions(s.Reddit, "rising", period, limit, before, after)
 }
 
-func (*s Subreddit) Controversial(params map[string]interface{}) ([]*Submissions, error) {
-  params["subreddit"] = Reddit
-  params["find_by"] = "controversial"
-  return s.Sesssion.SubredditSubmissionss(params)
+// Controversial returns the subreddits submissions sorted by "controversial"
+func (s *Subreddit) Controversial(period string, limit uint8, before string, after string) ([]*Submission, error) {
+  return s.Session.SubredditSubmissions(s.Reddit, "controversial", period, limit, before, after)
 }
 
-func (*s Subreddit) Top(params map[string]interface{}) ([]*Submissions, error) {
-  params["subreddit"] = Reddit
-  params["find_by"] = "top"
-  return s.Sesssion.SubredditSubmissionss(params)
+// Top returns the subreddits submissions sorted by "top"
+func (s *Subreddit) Top(period string, limit uint8, before string, after string) ([]*Submission, error) {
+  return s.Session.SubredditSubmissions(s.Reddit, "top", period, limit, before, after)
 }
 
-func (*s Subreddit) Gilded(params map[string]interface{}) ([]*Submissions, error) {
-  params["subreddit"] = Reddit
-  params["find_by"] = "gilded"
-  return s.Sesssion.SubredditSubmissionss(params)
+// Gilded returns the subreddits submissions sorted by "gilded"
+func (s *Subreddit) Gilded(period string, limit uint8, before string, after string) ([]*Submission, error) {
+  return s.Session.SubredditSubmissions(s.Reddit, "gilded", period, limit, before, after)
 }
 
-func (*s Subreddit) Promoted(params map[string]interface{}) ([]*Submissions, error) {
-  params["subreddit"] = Reddit
-  params["find_by"] = "promoted"
-  return s.Sesssion.SubredditSubmissionss(params)
+// Promoted returns the subreddits submissions sorted by "promoted"
+func (s *Subreddit) Promoted(period string, limit uint8, before string, after string) ([]*Submission, error) {
+  return s.Session.SubredditSubmissions(s.Reddit, "promoted", period, limit, before, after)
 }

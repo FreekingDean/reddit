@@ -57,26 +57,19 @@ func (s Session) DefaultFrontpage() ([]*Submission, error) {
 }
 
 // SubredditSubmissions returns the submissions on the given subreddit.
-func (s Session) SubredditSubmissions(subreddit string, sortMethod string, period string, before string, after string, limit uint8) ([]*Submission, error) {
-  queryString := ""
-  sortMethod := sortMethod + "/"
-  if sortMethod == "controversial" || sortMethod == "top" {
-    if value, ok := params["period"]; !ok || !value.(string) {
-      return nil, errors.New("This sorting method requires a period")
-    }
-    sortMethod += param["period"] + "/"
-  }
-  if before, ok := param["before"]; ok {
+func (s Session) SubredditSubmissions(subreddit string, sortMethod string, period string, limit uint8, before string, after string) ([]*Submission, error) {
+  queryString := fmt.Sprintf("limit=%d&", limit)
+  if before != "" {
     queryString += fmt.Sprintf("before=%s&", before)
   }
-  if after, ok := param["after"]; ok {
+  if after != "" {
     queryString += fmt.Sprintf("after=%s&", before)
   }
-  if after, ok := param["limit"]; ok {
-    queryString += fmt.Sprintf("limit=%d&", limit)
+  if period != "" {
+    queryString += fmt.Sprintf("t=%s&", period)
   }
 	req := request{
-		url:       fmt.Sprintf("http://www.reddit.com/r/%s.json?limit=%d&after=%s", subreddit, limit, after),
+		url:       fmt.Sprintf("http://www.reddit.com/r/%s/%s.json?%s", subreddit, sortMethod, queryString),
 		useragent: s.useragent,
 	}
 	body, err := req.getResponse()
