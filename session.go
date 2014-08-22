@@ -57,7 +57,24 @@ func (s Session) DefaultFrontpage() ([]*Submission, error) {
 }
 
 // SubredditSubmissions returns the submissions on the given subreddit.
-func (s Session) SubredditSubmissions(subreddit string, limit uint8, after string) ([]*Submission, error) {
+func (s Session) SubredditSubmissions(subreddit string, sortMethod string, period string, before string, after string, limit uint8) ([]*Submission, error) {
+  queryString := ""
+  sortMethod := sortMethod + "/"
+  if sortMethod == "controversial" || sortMethod == "top" {
+    if value, ok := params["period"]; !ok || !value.(string) {
+      return nil, errors.New("This sorting method requires a period")
+    }
+    sortMethod += param["period"] + "/"
+  }
+  if before, ok := param["before"]; ok {
+    queryString += fmt.Sprintf("before=%s&", before)
+  }
+  if after, ok := param["after"]; ok {
+    queryString += fmt.Sprintf("after=%s&", before)
+  }
+  if after, ok := param["limit"]; ok {
+    queryString += fmt.Sprintf("limit=%d&", limit)
+  }
 	req := request{
 		url:       fmt.Sprintf("http://www.reddit.com/r/%s.json?limit=%d&after=%s", subreddit, limit, after),
 		useragent: s.useragent,
@@ -199,6 +216,7 @@ func (s Session) AboutSubreddit(subreddit string) (*Subreddit, error) {
 	}
 
   r.Data.Session = &s
+  r.Data.Reddit = r.Data.URL[3:len(r.Data.URL)-1]
 
 	return &r.Data, nil
 }

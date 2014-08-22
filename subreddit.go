@@ -6,11 +6,11 @@ package reddit
 
 import (
 	"fmt"
+  "errors"
 )
 
 // Subreddit represents a subreddit from reddit.com.
 type Subreddit struct {
-  comments
 	Name        string  `json:"display_name"`
 	Title       string  `json:"title"`
 	Desc        string  `json:"description"`
@@ -23,15 +23,8 @@ type Subreddit struct {
 	NumSubs     int     `json:"subscribers"`
 	IsNSFW      bool    `json:"over18"`
 
+  Reddit      string   `json:"-"`
   Session     *Session `json:"-"`
-
-  Hot           Query
-  New           Query
-  Rising        Query
-  Controversial Queryable
-  Top           Queryable
-  Gilded        Query
-  Promoted      Query
 }
 
 // String returns the string representation of a subreddit.
@@ -46,12 +39,55 @@ func (s *Subreddit) String() string {
 	return fmt.Sprintf("%s (%s)", s.Title, subs)
 }
 
-// Submissions returns the submissions from this subreddit
-func (s *Subreddit) Submissions(limit uint8, after string) ([]*Submission, error) {
-  return s.Session.SubredditSubmissions(s.URL[3:len(s.URL)-1], limit, after)
+// SubredditSubmissionss returns the submissions from this subreddit
+func (s *Subreddit) SubredditSubmissionss(params map[string]interface{}) ([]*Submission, error) {
+  return s.Hot(params)
 }
 
 // Comments returns the comments from this subreddit
-func (s *Subreddit) Comments(limit uint8, after string, before string) ([]*Comment, error) {
-  return s.Session.SubredditComments(s.URL[3:len(s.URL)-1], limit, after, before)
+func (s *Subreddit) Comments(params map[string]interface{}) ([]*Comment, error) {
+  params["subreddit"] = Reddit
+  return s.Session.SubredditComments(params)
+}
+
+func (*s Subreddit) Hot(params map[string]interface{}) ([]*Submissions, error) {
+  params["subreddit"] = Reddit
+  params["find_by"] = "hot"
+  return s.Sesssion.SubredditSubmissionss(params)
+}
+
+func (*s Subreddit) New(params map[string]interface{}) ([]*Submissions, error) {
+  params["subreddit"] = Reddit
+  params["find_by"] = "new"
+  return s.Sesssion.SubredditSubmissionss(params)
+}
+
+func (*s Subreddit) Rising(params map[string]interface{}) ([]*Submissions, error) {
+  params["subreddit"] = Reddit
+  params["find_by"] = "rising"
+  return s.Sesssion.SubredditSubmissionss(params)
+}
+
+func (*s Subreddit) Controversial(params map[string]interface{}) ([]*Submissions, error) {
+  params["subreddit"] = Reddit
+  params["find_by"] = "controversial"
+  return s.Sesssion.SubredditSubmissionss(params)
+}
+
+func (*s Subreddit) Top(params map[string]interface{}) ([]*Submissions, error) {
+  params["subreddit"] = Reddit
+  params["find_by"] = "top"
+  return s.Sesssion.SubredditSubmissionss(params)
+}
+
+func (*s Subreddit) Gilded(params map[string]interface{}) ([]*Submissions, error) {
+  params["subreddit"] = Reddit
+  params["find_by"] = "gilded"
+  return s.Sesssion.SubredditSubmissionss(params)
+}
+
+func (*s Subreddit) Promoted(params map[string]interface{}) ([]*Submissions, error) {
+  params["subreddit"] = Reddit
+  params["find_by"] = "promoted"
+  return s.Sesssion.SubredditSubmissionss(params)
 }
